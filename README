@@ -1,3 +1,10 @@
+To run the game:
+python ./asteroid.py
+
+You will need python and pyglet installed in order to play.
+
+-----------------------------------------------------------------
+
 Simple asteroids clone written in Python with the Pyglet library. 
 
 
