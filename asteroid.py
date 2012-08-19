@@ -1,4 +1,5 @@
 import pyglet 
+import constants
 from ship import Ship
 from rocks import Rock_List, Rock
 from vector import Vector
@@ -24,12 +25,12 @@ def init_clock(interval_func, interval):
 
 # Initial Application Setup. 
 # Player ship, asteroids, window, resources, etc.
-window = pyglet.window.Window(800, 600)
+window = pyglet.window.Window(constants.window_width, constants.window_height)
 game_resources = Resources()
-ship_start = Vector(400,300)
+ship_start = constants.player_start
 ship = Ship(ship_start)
-rock_list = Rock_List(6, ship.ship_position)
-fps_display = init_clock(update, 1/60.0)
+rock_list = Rock_List(constants.number_of_rocks, ship.ship_position)
+fps_display = init_clock(update, constants.clock_interval)
 
 #Below are the game's window events. 
 @window.event

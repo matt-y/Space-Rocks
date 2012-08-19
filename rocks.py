@@ -3,6 +3,7 @@ from vector import Vector
 from resources import Resources, center_image
 from ship import Ship
 from gameobject import GameObject
+import constants
 import random
 
 
@@ -28,13 +29,12 @@ class Rock(GameObject):
         random_pos = player_pos
         #check with player position
         while(random_pos.v_distance_between(player_pos) < 100):
-            random_pos = Vector(random.randint(0,800),
-                                random.randint(0,600))
+            random_pos = Vector(random.randint(0, constants.window_width),
+                                random.randint(0,constants.window_height))
 
         rock_final = Rock(random_pos)
         rock_final.rotate(random.randint(0,360))
         return rock_final
-
 
 
     def draw(self):
@@ -42,7 +42,7 @@ class Rock(GameObject):
         self.rotate(self.rotation_speed)
         self.sprite.draw()
         if(self.is_out_of_bounds()):
-          self.position = Vector(400, 300)
+            self.reposition_rock()
     
     def set_position_with_acceleration(self):
         self.position += self.acceleration
@@ -50,4 +50,9 @@ class Rock(GameObject):
 
     def rotate(self, angle):
         self.sprite.rotation += angle
+
+    def reposition_rock(self):
+        self.acceleration = (constants.v_window_center - self.position).v_normalize()
+        self.set_position_with_acceleration()
+        
         

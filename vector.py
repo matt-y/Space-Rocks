@@ -21,8 +21,8 @@ class Vector(object):
     
     def __mul__(self, obj):
         if(type(obj) is float):
-            #matrix multiplication
-            return Vector(self.x * scalar, self.y * scalar)
+            #scalar 
+            return Vector(self.x * obj, self.y * obj)
         else:
             #matrix multiply 
             raise NotImplementedError("Multiplication between two vectors is not yet implemented")
@@ -34,7 +34,7 @@ class Vector(object):
         return self.x*vector.x + self.y*vector.y
 
     def v_normalize(self):
-        return Vector(self.x / len(self), self.y / len(self))
+        return Vector(self.x / float(len(self)), self.y / float(len(self)))
 
     def v_rotate(self, angle):
         x_prime = math.cos(angle)*self.x - (-math.sin(angle)*self.y)
