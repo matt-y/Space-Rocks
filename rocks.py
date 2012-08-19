@@ -38,15 +38,11 @@ class Rock(object):
         self.rotation_speed = random.uniform(0, 1)
 
     def draw(self):
-        #add the acceleration vector to our position vector. 
-        #self.position += self.acceleration
-        #self.rock_sprite.set_position(self.position.x, self.position.y)
         self.set_position_with_acceleration()
         self.rotate(self.rotation_speed)
         self.rock_sprite.draw()
     
     def set_position_with_acceleration(self):
-        self.acceleration = self.acceleration
         self.position += self.acceleration
         self.rock_sprite.set_position(self.position.x, self.position.y)
 
