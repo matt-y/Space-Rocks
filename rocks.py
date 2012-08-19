@@ -10,7 +10,7 @@ class Rock_List(object):
         self.number = number 
         self.rock_list = []
         for i in range(self.number):
-            self.rock_list.append(self.create_rock(player_pos))
+            self.rock_list.append(Rock_List.create_rock(player_pos))
         
 
 
@@ -36,6 +36,7 @@ class Rock(object):
         self.position = vector
         self.acceleration = Vector(random.uniform(-1,1), random.uniform(-1,1))
         self.rotation_speed = random.uniform(0, 1)
+
 
     def draw(self):
         self.set_position_with_acceleration()
