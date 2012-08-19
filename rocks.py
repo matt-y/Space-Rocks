@@ -2,6 +2,7 @@ import pyglet
 from vector import Vector
 from resources import Resources, center_image
 from ship import Ship
+from gameobject import GameObject
 import random
 
 
@@ -10,11 +11,19 @@ class Rock_List(object):
         self.number = number 
         self.rock_list = []
         for i in range(self.number):
-            self.rock_list.append(self.create_rock(player_pos))
-        
+            self.rock_list.append(Rock.create_rock_from_player_pos(player_pos))
 
+class Rock(GameObject):
+    def __init__(self, vector): 
+        self.sprite = center_image(pyglet.sprite.Sprite(img=Resources.rock_image,
+                                                             x=vector.x, y=vector.y))
 
-    def create_rock(self, player_pos):
+        self.position = vector
+        self.acceleration = Vector(random.uniform(-1,1), random.uniform(-1,1))
+        self.rotation_speed = random.uniform(0, 1)
+
+    @classmethod
+    def create_rock_from_player_pos(klass, player_pos):
         #attempt this until the rock position is 100 away from the player 
         random_pos = player_pos
         #check with player position
@@ -25,27 +34,19 @@ class Rock_List(object):
         rock_final = Rock(random_pos)
         rock_final.rotate(random.randint(0,360))
         return rock_final
-            
-            
 
-class Rock(object):
-    def __init__(self, vector): 
-        self.rock_sprite = center_image(pyglet.sprite.Sprite(img=Resources.rock_image,
-                                                             x=vector.x, y=vector.y))
-
-        self.position = vector
-        self.acceleration = Vector(random.uniform(-1,1), random.uniform(-1,1))
-        self.rotation_speed = random.uniform(0, 1)
 
     def draw(self):
         self.set_position_with_acceleration()
         self.rotate(self.rotation_speed)
-        self.rock_sprite.draw()
+        self.sprite.draw()
+        if(self.is_out_of_bounds()):
+          self.position = Vector(400, 300)
     
     def set_position_with_acceleration(self):
         self.position += self.acceleration
-        self.rock_sprite.set_position(self.position.x, self.position.y)
+        self.sprite.set_position(self.position.x, self.position.y)
 
     def rotate(self, angle):
-        self.rock_sprite.rotation += angle
+        self.sprite.rotation += angle
         
