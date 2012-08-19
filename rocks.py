@@ -1,6 +1,6 @@
 import pyglet
 from vector import Vector
-from resources import Resources
+from resources import Resources, center_image
 from ship import Ship
 import random
 
@@ -30,12 +30,26 @@ class Rock_List(object):
 
 class Rock(object):
     def __init__(self, vector): 
-        self.rock_sprite = pyglet.sprite.Sprite(img=Resources.rock_image, 
-                                                x=vector.x, y=vector.y)
+        self.rock_sprite = center_image(pyglet.sprite.Sprite(img=Resources.rock_image,
+                                                             x=vector.x, y=vector.y))
+
+        self.position = vector
+        self.acceleration = Vector(random.uniform(-1,1), random.uniform(-1,1))
+        self.rotation_speed = random.uniform(0, 1)
 
     def draw(self):
+        #add the acceleration vector to our position vector. 
+        #self.position += self.acceleration
+        #self.rock_sprite.set_position(self.position.x, self.position.y)
+        self.set_position_with_acceleration()
+        self.rotate(self.rotation_speed)
         self.rock_sprite.draw()
     
+    def set_position_with_acceleration(self):
+        self.acceleration = self.acceleration
+        self.position += self.acceleration
+        self.rock_sprite.set_position(self.position.x, self.position.y)
+
     def rotate(self, angle):
-        self.rock_sprite.rotation = angle
+        self.rock_sprite.rotation += angle
         

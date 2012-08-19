@@ -39,6 +39,7 @@ class Vector(object):
     def v_rotate(self, angle):
         x_prime = math.cos(angle)*self.x - (-math.sin(angle)*self.y)
         y_prime = math.sin(angle)*self.x + math.cos(angle)*self.y
+        return Vector(x_prime, y_prime)
 
     def v_distance_between(self, vector):
         return math.sqrt((self.x - vector.x)**2 + (self.y - vector.y)**2)
