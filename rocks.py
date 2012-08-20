@@ -52,7 +52,33 @@ class Rock(GameObject):
         self.sprite.rotation += angle
 
     def reposition_rock(self):
-        self.acceleration = (constants.v_window_center - self.position).v_normalize()
+        '''
+        This function will reposition a rock to the edge of the window, and will set its direction 
+        towards the center of the window, while keeping its previous speed
+
+        '''
+        self.position = self.new_edge_point()
+        self.acceleration = (constants.v_window_center - self.position).v_normalize() 
         self.set_position_with_acceleration()
         
+    def new_edge_point(self):
+        '''
+        A random value from 1 to 4 is chosen to represent which "edge" of the window we will 
+        place a point. From there, we are able to create specific points with appropriate y or x 
+        values. 
+
+        '''
+        side = random.randint(1,4)
+        if side == 1: 
+            #left side 
+            return Vector(0, random.randint(0, constants.window_height))
+        elif side == 2:
+            #right side 
+            return Vector(constants.window_width, random.randint(0, constants.window_height))
+        elif side == 3:
+            #top
+            return Vector(random.randint(0, constants.window_width), 0)
+        else:
+            #bottom
+            return Vector(random.randint(0, constants.window_width), constants.window_height)
         
