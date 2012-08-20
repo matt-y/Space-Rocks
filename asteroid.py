@@ -4,6 +4,7 @@ from ship import Ship
 from rocks import Rock_List, Rock
 from vector import Vector
 from resources import Resources
+from pyglet.window import key
 
 def update(dt):
     '''
@@ -29,7 +30,7 @@ window = pyglet.window.Window(constants.window_width, constants.window_height)
 game_resources = Resources()
 ship_start = constants.player_start
 ship = Ship(ship_start)
-rock_list = Rock_List(constants.number_of_rocks, ship.ship_position)
+rock_list = Rock_List(constants.number_of_rocks, ship.position)
 fps_display = init_clock(update, constants.clock_interval)
 
 #Below are the game's window events. 
@@ -38,10 +39,17 @@ def on_draw():
     window.clear()
     ship.draw()
     for rock in rock_list.rock_list:
-        rock.draw() #rock logic handled in rock's draw function 
+        rock.draw()#rock logic handled in rock's draw function 
     fps_display.draw()
-
-
+    
+@window.event 
+def on_key_press(symbol, mods):
+    if symbol == key.LEFT:
+        print "left key"
+        ship.rotate_left()
+    elif symbol == key.RIGHT:
+        print "right key"
+        ship.rotate_right()
 
 
 if __name__ == '__main__':

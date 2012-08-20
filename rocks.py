@@ -44,12 +44,12 @@ class Rock(GameObject):
         if(self.is_out_of_bounds()):
             self.reposition_rock()
     
-    def set_position_with_acceleration(self):
-        self.position += self.acceleration
-        self.sprite.set_position(self.position.x, self.position.y)
+    #def set_position_with_acceleration(self):
+    #    self.position += self.acceleration
+    #    self.sprite.set_position(self.position.x, self.position.y)
 
-    def rotate(self, angle):
-        self.sprite.rotation += angle
+    #def rotate(self, angle):
+    #    self.sprite.rotation += angle
 
     def reposition_rock(self):
         '''
