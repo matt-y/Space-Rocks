@@ -16,13 +16,18 @@ class Rock_List(object):
 
 class Rock(GameObject):
     def __init__(self, vector): 
-        self.sprite = center_image(pyglet.sprite.Sprite(img=Resources.rock_image,
+        #pick rock sprite 
+        
+        self.sprite = center_image(pyglet.sprite.Sprite(img=self.choose_sprite_from_list(Resources.rock_sprites),
                                                              x=vector.x, y=vector.y))
 
         self.position = vector
         self.acceleration = Vector(random.uniform(-1,1), random.uniform(-1,1))
         self.rotation_speed = random.uniform(0, 1)
 
+    def choose_sprite_from_list(self, list):
+        return list[random.randint(0, len(list) -1)]
+        
     @classmethod
     def create_rock_from_player_pos(klass, player_pos):
         #attempt this until the rock position is 100 away from the player 
@@ -36,20 +41,12 @@ class Rock(GameObject):
         rock_final.rotate(random.randint(0,360))
         return rock_final
 
-
     def draw(self):
         self.set_position_with_acceleration()
         self.rotate(self.rotation_speed)
         self.sprite.draw()
         if(self.is_out_of_bounds()):
             self.reposition_rock()
-    
-    #def set_position_with_acceleration(self):
-    #    self.position += self.acceleration
-    #    self.sprite.set_position(self.position.x, self.position.y)
-
-    #def rotate(self, angle):
-    #    self.sprite.rotation += angle
 
     def reposition_rock(self):
         '''
