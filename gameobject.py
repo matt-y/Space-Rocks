@@ -11,6 +11,9 @@ class GameObject(object):
     def rotate(self, angle): 
         self.sprite.rotation += angle
     
+    def get_velocity(self):
+        return self.position.v_distance_between(self.acceleration)
+
     def set_position_with_acceleration(self):
         self.position += self.acceleration
         self.sprite.set_position(self.position.x, self.position.y)
@@ -31,3 +34,26 @@ class GameObject(object):
         #position is in the center of the image (center_image)
         left_hand_edge_point = Vector(self.position.x - self.sprite.width/2, self.position.y)
         return self.position.v_distance_between(left_hand_edge_point)
+
+    def will_collide_with(self, other):
+        '''
+        Returns true or false if a collision will occur between two game objects 
+
+        '''
+        distance = math.sqrt((self.center_x() - other.center_x())**2 + 
+                             (self.center_y() - other.center_y())**2)
+        radii_sum = self.radius() + other.obj_radius()
+
+        if(distance <= radii_sum):
+            return True
+        else:
+            return False
+
+    def handle_collision(self, other):
+        #retrieve a vecotr that  points from self to other
+        at = other.position - self.position
+        
+        #normalize this direction vector 
+        normalized_at = at.v_normalize()
+        
+        pass

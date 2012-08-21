@@ -21,7 +21,9 @@ class Resources(object):
     rock_image1 = pyglet.resource.image("rock1.png")
     rock_image2 = pyglet.resource.image("rock2.png")
     rock_image3 = pyglet.resource.image("rock3.png")
-    rock_sprites = [rock_image1, rock_image2, rock_image3]
+    rock_sprites = [center_image(rock_image1), 
+                    center_image(rock_image2),
+                    center_image(rock_image3)]
 
 class Labels(object):
     fps_counter = pyglet.text.Label(text="fps:", x=100, y=100,

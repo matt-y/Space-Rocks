@@ -19,8 +19,8 @@ class Rock(GameObject):
     def __init__(self, vector): 
         #pick rock sprite 
         
-        self.sprite = center_image(pyglet.sprite.Sprite(img=self.choose_sprite_from_list(Resources.rock_sprites),
-                                                             x=vector.x, y=vector.y))
+        self.sprite = pyglet.sprite.Sprite(img=self.choose_sprite_from_list(Resources.rock_sprites),
+                                                             x=vector.x, y=vector.y)
 
         self.position = vector
         self.acceleration = Vector(random.uniform(-1,1), random.uniform(-1,1))
@@ -56,7 +56,7 @@ class Rock(GameObject):
 
         '''
         self.position = self.new_edge_point()
-        self.acceleration = (constants.v_window_center - self.position).v_normalize() 
+        self.acceleration = (constants.v_window_center - self.position).v_normalize() * random.uniform(0,1)
         self.set_position_with_acceleration()
         
     def new_edge_point(self):

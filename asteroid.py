@@ -43,7 +43,7 @@ def on_draw():
     for obj in object_list:
         #rock logic handled in rock's draw function, likewise for ship
         obj.draw()
-    rock2obj_collision_check(object_list, object_list)
+    #rock2obj_collision_check(object_list, object_list)
     fps_display.draw()
     
 @window.event 
