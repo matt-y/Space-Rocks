@@ -27,6 +27,12 @@ class Vector(object):
             #matrix multiply 
             raise NotImplementedError("Multiplication between two vectors is not yet implemented")
 
+    def __eq__(self, other):
+        if (self.x == other.x and self.y == other.y):
+            return True
+        else: 
+            return False
+
     def __len__(self):
         return math.sqrt(self.x*self.x + self.y*self.y)
     

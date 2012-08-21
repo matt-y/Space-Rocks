@@ -5,6 +5,7 @@ from ship import Ship
 from gameobject import GameObject
 import constants
 import random
+import math
 
 
 class Rock_List(object):
@@ -27,7 +28,7 @@ class Rock(GameObject):
 
     def choose_sprite_from_list(self, list):
         return list[random.randint(0, len(list) -1)]
-        
+
     @classmethod
     def create_rock_from_player_pos(klass, player_pos):
         #attempt this until the rock position is 100 away from the player 
@@ -47,7 +48,7 @@ class Rock(GameObject):
         self.sprite.draw()
         if(self.is_out_of_bounds()):
             self.reposition_rock()
-
+    
     def reposition_rock(self):
         '''
         This function will reposition a rock to the edge of the window, and will set its direction 
