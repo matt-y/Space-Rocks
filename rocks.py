@@ -25,6 +25,7 @@ class Rock(GameObject):
         self.position = vector
         self.acceleration = Vector(random.uniform(-1,1), random.uniform(-1,1))
         self.rotation_speed = random.uniform(0, 1)
+        self.mass = 10
 
     def choose_sprite_from_list(self, list):
         return list[random.randint(0, len(list) -1)]

@@ -10,6 +10,7 @@ class Ship(GameObject):
                                                 x=vector.x, y=vector.y)
         self.position = vector
         self.acceleration = self.position
+        self.mass = 10
     
     def rotate_left(self):
         self.rotate(-5)

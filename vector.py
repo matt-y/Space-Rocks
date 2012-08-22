@@ -40,7 +40,11 @@ class Vector(object):
         return self.x*vector.x + self.y*vector.y
 
     def v_normalize(self):
-        return Vector(self.x / float(len(self)), self.y / float(len(self)))
+        #we should avoid dividing by zero!
+        denom = float(len(self))
+        if denom == 0.0:
+            denom = 0.1
+        return Vector(self.x / denom, self.y / denom)
 
     def v_rotate(self, angle):
         x_prime = math.cos(angle)*self.x - (-math.sin(angle)*self.y)

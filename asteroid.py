@@ -5,6 +5,7 @@ from ship import Ship
 from rocks import Rock_List, Rock
 from vector import Vector
 from resources import Resources
+from gameobject import GameObject
 from pyglet.window import key
 
 def update(dt):
@@ -33,7 +34,7 @@ ship_start = constants.player_start
 ship = Ship(ship_start)
 #python! :<
 object_list = Rock_List(constants.number_of_rocks, ship.position).rock_list
-object_list.append(ship)
+#object_list.append(ship)
 fps_display = init_clock(update, constants.clock_interval)
 
 #Below are the game's window events. 
@@ -43,7 +44,7 @@ def on_draw():
     for obj in object_list:
         #rock logic handled in rock's draw function, likewise for ship
         obj.draw()
-    #rock2obj_collision_check(object_list, object_list)
+    rock2obj_collision_check(object_list, object_list)
     fps_display.draw()
     
 @window.event 
@@ -66,21 +67,9 @@ def rock2obj_collision_check(list1, list2):
             if obj == other_obj:
                 continue
             else:
-                #Something collides if the distance between the center of two objects is 
-                #less than the sum of their radii
-                distance = math.sqrt((obj.center_x() - other_obj.center_x())**2 +
-                                     (obj.center_y() - other_obj.center_y())**2)
-                radii_sum = obj.radius() + other_obj.radius()
-                if(distance < radii_sum):
-                    #collision between rock and obj 
-                    if (type(obj) == Ship):
-                        #player death!!!!! DEATH! HE'S DEAD JIM!
-                        print "player has died" 
-                        pass
-                    else: 
-                        #ASTEROID DEATH!!!! :'( but they are so pretty
-                        print "asteroid collision somehwere" 
-                        pass
+                if(obj.will_collide_with(other_obj)):
+                       GameObject.handle_collision(obj, other_obj)
+
 
 
 

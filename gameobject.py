@@ -1,4 +1,5 @@
 import constants 
+import math
 from vector import Vector
 
 class GameObject(object):
@@ -42,18 +43,37 @@ class GameObject(object):
         '''
         distance = math.sqrt((self.center_x() - other.center_x())**2 + 
                              (self.center_y() - other.center_y())**2)
-        radii_sum = self.radius() + other.obj_radius()
+        radii_sum = self.radius() + other.radius()
 
         if(distance <= radii_sum):
             return True
         else:
             return False
+    
+    @classmethod
+    def handle_collision(self, one, other):
+        #Below, we get a vector from self to other, and other to self.
+        one_to_other = other.position - one.position
+        other_to_one = one.position - other.position
 
-    def handle_collision(self, other):
-        #retrieve a vecotr that  points from self to other
-        at = other.position - self.position
+        #unit vectors in the direction of the collision 
+        normal_one_to_other = one_to_other.v_normalize()
+        normal_other_to_one = other_to_one.v_normalize()
+
+        #here we fiugre out how far along the velocity/acceleration vector is along the 
+        #normalized vectors that point to the collision  
+        proj_vel_one_to_other = normal_one_to_other.v_dot(one.acceleration)
+        proj_vel_other_to_one = normal_other_to_one.v_dot(other.acceleration)
+
+        #subtract the scaled collision vector from the acceleration vector
+        #yielding our NEW acceleration vector 
+        new_one_acceleration_vector = (one.acceleration - (normal_one_to_other * proj_vel_other_to_one))
+        new_other_acceleration_vector = (other.acceleration - (normal_other_to_one * proj_vel_other_to_one))
         
-        #normalize this direction vector 
-        normalized_at = at.v_normalize()
+        #done 
+        one.acceleration = new_one_acceleration_vector 
+        other.acceleration = new_other_acceleration_vector
+
         
-        pass
+                                                              
+                                                          
