@@ -32,18 +32,29 @@ class GameObject(object):
         return self.position.y   
     
     def radius(self):
-        #position is in the center of the image (center_image)
-        left_hand_edge_point = Vector(self.position.x - self.sprite.width/2, self.position.y)
-        return self.position.v_distance_between(left_hand_edge_point)
+        #our sprites are squares. We define the radius as the distance from the 
+        #center of the sprite, to a corner. 
+        #distance from center to corner in a "unit square" is sqrt(.50)
+        width = self.width()
+        height = self.height()
+        if(width == height):
+            return math.sqrt(.5) * width
 
-    def will_collide_with(self, other):
+        #radii do not exist for polygons and rectangles (ok fine, or squares)
+        elif(width > height):
+            return width 
+        else: 
+            return height 
+        
+    @classmethod
+    def will_collide_with(self, one, other):
         '''
         Returns true or false if a collision will occur between two game objects 
 
         '''
-        distance = math.sqrt((self.center_x() - other.center_x())**2 + 
-                             (self.center_y() - other.center_y())**2)
-        radii_sum = self.radius() + other.radius()
+        distance = math.sqrt((one.center_x() - other.center_x())**2 + 
+                             (one.center_y() - other.center_y())**2)
+        radii_sum = one.radius() + other.radius()
 
         if(distance <= radii_sum):
             return True

@@ -57,7 +57,7 @@ class Rock(GameObject):
 
         '''
         self.position = self.new_edge_point()
-        self.acceleration = (constants.v_window_center - self.position).v_normalize() * random.uniform(0,1)
+        self.acceleration = (constants.v_window_center - self.position).v_normalize() * random.uniform(.5,1.5)
         self.set_position_with_acceleration()
         
     def new_edge_point(self):
