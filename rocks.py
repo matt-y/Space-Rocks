@@ -21,10 +21,9 @@ class Rock(GameObject):
         
         self.sprite = pyglet.sprite.Sprite(img=self.choose_sprite_from_list(Resources.rock_sprites),
                                                              x=vector.x, y=vector.y)
-
         self.position = vector
-        self.acceleration = Vector(random.uniform(-1,1), random.uniform(-1,1))
-        self.rotation_speed = random.uniform(0, 1)
+        self.velocity = Vector(random.uniform(-1.0, 1.0), random.uniform(-1.0,1.0))
+        self.rotation_speed = random.uniform(0.1, 1.0)
         self.mass = 10
 
     def choose_sprite_from_list(self, list):
@@ -36,15 +35,19 @@ class Rock(GameObject):
         random_pos = player_pos
         #check with player position
         while(random_pos.v_distance_between(player_pos) < 100):
-            random_pos = Vector(random.randint(0, constants.window_width),
-                                random.randint(0,constants.window_height))
+            random_pos = Vector(random.uniform(0, constants.window_width),
+                                random.uniform(0,constants.window_height))
 
         rock_final = Rock(random_pos)
         rock_final.rotate(random.randint(0,360))
         return rock_final
 
     def draw(self):
-        self.set_position_with_acceleration()
+        self.set_position_with_velocity()
+        next_post = (self.position + self.velocity) * 1.1
+        pyglet.gl.glColor4f(1.0,0,0,1.0)
+        pyglet.graphics.draw(2, pyglet.gl.GL_LINES,
+                             ('v2i', (int(self.position.x), int(self.position.y), int(next_post.x), int(next_post.y))))
         self.rotate(self.rotation_speed)
         self.sprite.draw()
         if(self.is_out_of_bounds()):
@@ -57,8 +60,8 @@ class Rock(GameObject):
 
         '''
         self.position = self.new_edge_point()
-        self.acceleration = (constants.v_window_center - self.position).v_normalize() * random.uniform(.5,1.5)
-        self.set_position_with_acceleration()
+        self.velocity = (constants.v_window_center - self.position).v_normalize() * random.uniform(.5,1.5)
+        self.set_position_with_velocity()
         
     def new_edge_point(self):
         '''

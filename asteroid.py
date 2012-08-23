@@ -68,7 +68,7 @@ def rock2obj_collision_check(list1, list2):
                 continue
             else:
                 if(GameObject.will_collide_with(obj, other_obj)):
-                       GameObject.handle_collision(obj, other_obj)
+                       obj.handle_collision(other_obj)
 
 
 
