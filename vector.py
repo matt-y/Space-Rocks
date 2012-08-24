@@ -10,8 +10,8 @@ class Vector(object):
     """
 
     def __init__(self, x=0,y=0):
-        self.x = x
-        self.y = y
+        self.x = float(x)
+        self.y = float(y)
 
     def __add__(self, vector):
         return Vector(self.x + vector.x, self.y + vector.y)
@@ -34,7 +34,7 @@ class Vector(object):
             return False
 
     def __len__(self):
-        return math.sqrt(self.x*self.x + self.y*self.y)
+        return math.sqrt((self.x**2) + (self.y**2))
     
     def v_dot(self, vector):
         return self.x*vector.x + self.y*vector.y

@@ -44,10 +44,11 @@ class Rock(GameObject):
 
     def draw(self):
         self.set_position_with_velocity()
-        next_post = (self.position + self.velocity) * 1.1
+        next_post = (self.position + self.velocity * 50.0)
         pyglet.gl.glColor4f(1.0,0,0,1.0)
         pyglet.graphics.draw(2, pyglet.gl.GL_LINES,
                              ('v2i', (int(self.position.x), int(self.position.y), int(next_post.x), int(next_post.y))))
+       
         self.rotate(self.rotation_speed)
         self.sprite.draw()
         if(self.is_out_of_bounds()):

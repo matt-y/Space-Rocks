@@ -76,10 +76,10 @@ class GameObject(object):
         #This breaks the velocity vectors into normal and tengental components
 
         #(compute the scalar velocity of the objects along the normals 
-        self_normal_scalar_v = unit_normal.v_dot(self.velocity)
-        self_tangent_scalar_v = unit_tangent.v_dot(self.velocity) #new tangent velocity 
-        other_normal_scalar_v = unit_normal.v_dot(other.velocity)
-        other_tangent_scalar_v = unit_tangent.v_dot(other.velocity) #new tangent velocity 
+        self_normal_scalar_v = unit_normal.v_dot(self.velocity.v_normalize())
+        self_tangent_scalar_v = unit_tangent.v_dot(self.velocity.v_normalize()) #new tangent velocity 
+        other_normal_scalar_v = unit_normal.v_dot(other.velocity.v_normalize())
+        other_tangent_scalar_v = unit_tangent.v_dot(other.velocity.v_normalize()) #new tangent velocity 
         
         #compute the wikipedia normal velocity formula 
         mass_difference = self.mass - other.mass
