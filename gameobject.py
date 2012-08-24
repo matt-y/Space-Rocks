@@ -32,20 +32,17 @@ class GameObject(object):
         return self.position.y   
     
     def radius(self):
-        #our sprites are squares. We define the radius as the distance from the 
-        #center of the sprite, to a corner. 
-        #distance from center to corner in a "unit square" is sqrt(.50)
-        width = self.width()
-        height = self.height()
-        if(width == height):
-            return math.sqrt(.5) * width
+        # subtracting 10 is a decent adjustment for the empty 
+        # space on the edge of the sprites 
+        return math.sqrt(.5) * self.width() - 10
 
-        #radii do not exist for polygons and rectangles (ok fine, or squares)
-        elif(width > height):
-            return width 
-        else: 
-            return height 
-        
+    def in_same_direction(self, other):
+        v_between = self.position - other.position
+        if (v_between.v_dot(self.position + self.velocity) <= 0):
+            return False
+        else:
+            return True
+
     @classmethod
     def will_collide_with(self, one, other):
         '''
@@ -57,50 +54,39 @@ class GameObject(object):
         radii_sum = one.radius() + other.radius()
 
         if(distance <= radii_sum):
-            return True
+            #early escape check
+            if one.in_same_direction(other):
+                return True
+
         else:
             return False
     
     def handle_collision(self, other):
-        #Compute the normal between self and other
-        normal = other.position - self.position
-        #get a unit vector from the above 
-        unit_normal = normal.v_normalize()
+        #thank you kindly to a lovely gamasutra article
+        # here: http://www.gamasutra.com/view/feature/131424/pool_hall_lessons_fast_accurate_.php?page=1
+        n = self.position - other.position 
+       
+        n_norm = n.v_normalize()
 
-        #compute the tangent vector of the unit vector 
-        #(make the x component the negative of the normal's y, 
-        #    and the y component the normal's x component)
-        unit_tangent = Vector(-unit_normal.y, unit_normal.x)
-
-        #project the velocities of objects over the unit vector of the collision normal 
-        #This breaks the velocity vectors into normal and tengental components
-
-        #(compute the scalar velocity of the objects along the normals 
-        self_normal_scalar_v = unit_normal.v_dot(self.velocity.v_normalize())
-        self_tangent_scalar_v = unit_tangent.v_dot(self.velocity.v_normalize()) #new tangent velocity 
-        other_normal_scalar_v = unit_normal.v_dot(other.velocity.v_normalize())
-        other_tangent_scalar_v = unit_tangent.v_dot(other.velocity.v_normalize()) #new tangent velocity 
+        v1 = self.velocity 
+        v2 = other.velocity 
         
-        #compute the wikipedia normal velocity formula 
-        mass_difference = self.mass - other.mass
-        mass_sum = self.mass + other.mass
-        self_new_norm_velocity = ((self_normal_scalar_v * mass_difference) + 2 * (other.mass*other_normal_scalar_v)) / mass_sum
-        other_new_norm_velocity = ((other_normal_scalar_v * mass_difference) + 2 * (self.mass*self_normal_scalar_v)) / mass_sum 
-        
-        #convert the normal and tangent velocities into vectors (by scaling the unit normal vector)
-        self_norm_component = unit_normal * self_new_norm_velocity
-        other_norm_component = unit_normal * other_new_norm_velocity
-        
-        self_tan_component = unit_normal * self_tangent_scalar_v
-        other_tan_component = unit_normal * other_tangent_scalar_v
+        a1 = v1.v_dot(n)
+        a2 = v2.v_dot(n)
 
-        #get the final new velocities by adding the tangental component
-        self_v_final = self_norm_component + self_tan_component
-        other_v_final = other_norm_component + other_tan_component
+        op_P = ((a1 - a2) * 2.0) / (self.mass + other.mass)
 
-        #OMG DONE
-        self.velocity = self_v_final 
-        other.velocity = other_v_final
+        temp = n * op_P
+        v1_prime = v1 - (temp * other.mass)
+        v2_prime = v2 + (temp * self.mass)
+
+        #these get normalized because distance between pixels DNE 
+        # distance in R/L
+        self.velocity = v1_prime.v_normalize()
+        other.velocity = v2_prime.v_normalize()
+        
+            
+   
         
                                                               
                                                           

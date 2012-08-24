@@ -8,3 +8,4 @@ clock_interval = 1/60.0
 number_of_rocks = 10
 player_start = Vector(window_width/2, window_height/2)
 
+debug = True 

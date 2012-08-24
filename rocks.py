@@ -24,7 +24,7 @@ class Rock(GameObject):
         self.position = vector
         self.velocity = Vector(random.uniform(-1.0, 1.0), random.uniform(-1.0,1.0))
         self.rotation_speed = random.uniform(0.1, 1.0)
-        self.mass = 10
+        self.mass = 5.0
 
     def choose_sprite_from_list(self, list):
         return list[random.randint(0, len(list) -1)]
@@ -45,8 +45,9 @@ class Rock(GameObject):
     def draw(self):
         self.set_position_with_velocity()
         next_post = (self.position + self.velocity * 50.0)
-        pyglet.gl.glColor4f(1.0,0,0,1.0)
-        pyglet.graphics.draw(2, pyglet.gl.GL_LINES,
+        if constants.debug:
+            pyglet.gl.glColor4f(1.0,0,0,1.0)
+            pyglet.graphics.draw(2, pyglet.gl.GL_LINES,
                              ('v2i', (int(self.position.x), int(self.position.y), int(next_post.x), int(next_post.y))))
        
         self.rotate(self.rotation_speed)
