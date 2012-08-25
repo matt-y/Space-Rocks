@@ -11,10 +11,38 @@ import math
 class Rock_List(object):
     def __init__(self, number, player_pos):
         self.number = number 
-        self.rock_list = []
+        self.rock_list = [Rock.create_rock_from_other_pos(player_pos)]
         for i in range(self.number):
-            self.rock_list.append(Rock.create_rock_from_player_pos(player_pos))
+         
+            #create a rock. If the rock is in range of the player OR any rock in the rock list - try again 
+            is_rock_valid = False 
+           
+            while(is_rock_valid == False):
+                broken = False 
+                #try to get a valid rock 
+                rock = Rock.create_rock_from_other_pos(player_pos)
+                for r in self.rock_list:
+                    if(self.do_objects_overlap(r, rock)):
+                        #conflict with current rock 
+                        broken = True
+                        break
+                    else:
+                        continue
+                if(broken): 
+                    continue
+                else: 
+                    is_rock_valid = True
 
+            #outside while loop:
+            self.rock_list.append(rock)
+
+    def do_objects_overlap(self, one, other):
+        if(one.position.v_distance_between(other.position) < 100):
+            return True
+        else:
+            return False
+
+    
 class Rock(GameObject):
     def __init__(self, vector): 
         #pick rock sprite 
@@ -22,19 +50,20 @@ class Rock(GameObject):
         self.sprite = pyglet.sprite.Sprite(img=self.choose_sprite_from_list(Resources.rock_sprites),
                                                              x=vector.x, y=vector.y)
         self.position = vector
-        self.velocity = Vector(random.uniform(-1.0, 1.0), random.uniform(-1.0,1.0))
+        self.velocity = self.create_random_velocity()
         self.rotation_speed = random.uniform(0.1, 1.0)
         self.mass = 5.0
-
+        self.ignore_collisions = False
+        
     def choose_sprite_from_list(self, list):
         return list[random.randint(0, len(list) -1)]
 
     @classmethod
-    def create_rock_from_player_pos(klass, player_pos):
+    def create_rock_from_other_pos(klass, other_pos):
         #attempt this until the rock position is 100 away from the player 
-        random_pos = player_pos
+        random_pos = other_pos
         #check with player position
-        while(random_pos.v_distance_between(player_pos) < 100):
+        while(random_pos.v_distance_between(other_pos) < 100):
             random_pos = Vector(random.uniform(0, constants.window_width),
                                 random.uniform(0,constants.window_height))
 
@@ -44,7 +73,7 @@ class Rock(GameObject):
 
     def draw(self):
         self.set_position_with_velocity()
-        next_post = (self.position + self.velocity * 50.0)
+        next_post = (self.position + self.velocity)
         if constants.debug:
             pyglet.gl.glColor4f(1.0,0,0,1.0)
             pyglet.graphics.draw(2, pyglet.gl.GL_LINES,
@@ -62,9 +91,11 @@ class Rock(GameObject):
 
         '''
         self.position = self.new_edge_point()
-        self.velocity = (constants.v_window_center - self.position).v_normalize() * random.uniform(.5,1.5)
+        self.velocity = self.create_velocity_to_center()
         self.set_position_with_velocity()
+       
         
+
     def new_edge_point(self):
         '''
         A random value from 1 to 4 is chosen to represent which "edge" of the window we will 

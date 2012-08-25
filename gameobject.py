@@ -1,6 +1,8 @@
 import constants 
 import math
+import random
 from vector import Vector
+
 
 class GameObject(object):
     def width(self):
@@ -16,7 +18,7 @@ class GameObject(object):
         return self.position.v_distance_between(self.velocity)
 
     def set_position_with_velocity(self):
-        self.position += self.velocity
+        self.position += self.velocity * constants.clock_interval
         self.sprite.set_position(self.position.x, self.position.y)
 
     def is_out_of_bounds(self):
@@ -42,6 +44,16 @@ class GameObject(object):
             return False
         else:
             return True
+
+    def speed_scale(self):
+        return random.uniform(10,50)
+
+    def create_random_velocity(self):
+        return Vector(random.uniform(-1,1), random.uniform(-1,1)) * self.speed_scale()
+    
+    def create_velocity_to_center(self):
+        return (constants.v_window_center - self.position).v_normalize() * self.speed_scale()
+
 
     @classmethod
     def will_collide_with(self, one, other):
@@ -82,8 +94,8 @@ class GameObject(object):
 
         #these get normalized because distance between pixels DNE 
         # distance in R/L
-        self.velocity = v1_prime.v_normalize()
-        other.velocity = v2_prime.v_normalize()
+        self.velocity = v1_prime.v_normalize() * self.speed_scale()
+        other.velocity = v2_prime.v_normalize() * self.speed_scale()
         
             
    
