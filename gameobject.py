@@ -36,7 +36,7 @@ class GameObject(object):
     def radius(self):
         # subtracting 10 is a decent adjustment for the empty 
         # space on the edge of the sprites 
-        return math.sqrt(.5) * self.width() - 10
+        return math.sqrt(.5) * self.width() -10
 
     def in_same_direction(self, other):
         v_between = self.position - other.position
@@ -64,7 +64,7 @@ class GameObject(object):
         distance = math.sqrt((one.center_x() - other.center_x())**2 + 
                              (one.center_y() - other.center_y())**2)
         radii_sum = one.radius() + other.radius()
-
+        
         if(distance <= radii_sum):
             #early escape check
             if one.in_same_direction(other):

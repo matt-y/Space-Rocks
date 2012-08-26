@@ -84,7 +84,7 @@ class Rock(GameObject):
         if(self.is_out_of_bounds()):
             self.reposition_rock()
     
-    def reposition_rock(self):
+    def reposition_rock3(self):
         '''
         This function will reposition a rock to the edge of the window, and will set its direction 
         towards the center of the window, while keeping its previous speed
@@ -94,6 +94,35 @@ class Rock(GameObject):
         self.velocity = self.create_velocity_to_center()
         self.set_position_with_velocity()
        
+
+    def reposition_rock(self):
+        #current position is already out of bounds 
+        x_pos = self.position.x
+        y_pos = self.position.y
+        
+        #Remember: Y axis grows downwards in the game window 
+        
+        new_x = x_pos
+        new_y = constants.window_height - y_pos
+        if x_pos < 0: 
+            #if we are OOB to the LEFT 
+            new_x = constants.window_width + 50
+            print "oob left"
+        if x_pos > constants.window_width:
+            #If we are OOB to the RIGHT 
+            new_x = -50
+            print "oob right"
+        if y_pos > constants.window_height: 
+            #if we are OOB to the top
+            new_y = 0
+            print "oob top"
+        if y_pos < 0:
+            #if we areOOB to the bottom
+            new_y = constants.window_height + 50
+            print "oob bottom"
+        self.position = Vector(new_x, new_y)
+        #self.velocity = self.create_velocity_to_center()
+        self.set_position_with_velocity()
         
 
     def new_edge_point(self):
