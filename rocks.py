@@ -7,54 +7,26 @@ import constants
 import random
 import math
 
-
-class Rock_List(object):
-    def __init__(self, number, player_pos):
-        self.number = number 
-        self.rock_list = [Rock.create_rock_from_other_pos(player_pos)]
-        for i in range(self.number):
-         
-            #create a rock. If the rock is in range of the player OR any rock in the rock list - try again 
-            is_rock_valid = False 
-           
-            while(is_rock_valid == False):
-                broken = False 
-                #try to get a valid rock 
-                rock = Rock.create_rock_from_other_pos(player_pos)
-                for r in self.rock_list:
-                    if(self.do_objects_overlap(r, rock)):
-                        #conflict with current rock 
-                        broken = True
-                        break
-                    else:
-                        continue
-                if(broken): 
-                    continue
-                else: 
-                    is_rock_valid = True
-
-            #outside while loop:
-            self.rock_list.append(rock)
-
-    def do_objects_overlap(self, one, other):
-        if(one.position.v_distance_between(other.position) < 100):
-            return True
-        else:
-            return False
-
-    
 class Rock(GameObject):
     def __init__(self, vector): 
         #pick rock sprite 
         
         self.sprite = pyglet.sprite.Sprite(img=self.choose_sprite_from_list(Resources.rock_sprites),
-                                                             x=vector.x, y=vector.y)
+                                           x=vector.x,
+                                           y=vector.y)
         self.position = vector
         self.velocity = self.create_random_velocity()
         self.rotation_speed = random.uniform(0.1, 1.0)
         self.mass = 5.0
+        self.hp = random.randint(2,5)
+        self.ignore_breaks = False
         self.ignore_collisions = False
         
+    def set_sprite(self, sprite_image):
+        self.sprite = pyglet.sprite.Sprite(img=sprite_image, 
+                                           x=self.position.x, 
+                                           y=self.position.y)
+
     def choose_sprite_from_list(self, list):
         return list[random.randint(0, len(list) -1)]
 
@@ -84,6 +56,65 @@ class Rock(GameObject):
         if(self.is_out_of_bounds()):
             self.reposition_rock()
     
+    def break_rock(self):
+        '''
+        This function breaks a large rock into four smaller rocks.
+
+        To do this, the rock is partitioned into four quadrants - the center of these quadrants is a new 
+        rock position. New rocks are created at the center of each quadrant, and added to the rock list.
+        the new velocities go outward from the center of the orighttp://www.reddit.com/inal sprite 
+        '''
+        #remove current rock from list. 
+        new_list = []
+        for rock in constants.object_list:
+            if self != rock: 
+                new_list.append(rock)
+
+        width = self.width()
+        height = self.height()
+
+        center_x = self.position.x
+        center_y = self.position.y
+        
+        quadrant_horizontal_offset = width/4
+        quadrant_vertical_offset = height/4
+
+        upper_left = Vector(center_x - quadrant_horizontal_offset,
+                            center_y + quadrant_vertical_offset)
+        upper_right = Vector(center_x + quadrant_horizontal_offset, 
+                             center_y + quadrant_vertical_offset)
+        bottom_left = Vector(center_x - quadrant_horizontal_offset, 
+                             center_y - quadrant_vertical_offset)
+        bottom_right = Vector(center_x + quadrant_horizontal_offset, 
+                              center_y - quadrant_vertical_offset)
+
+        sprite = Resources.rock_image1_small
+        
+        #create vectors, and add to rock list
+        rock_upper_left = self.create_small_rock(upper_left, Vector(-1,1), sprite)
+
+        rock_upper_right = self.create_small_rock(upper_right, Vector(1,1), sprite)
+
+        rock_bottom_left = self.create_small_rock(bottom_left, Vector(-1,-1), sprite)
+        
+        rock_bottom_right = self.create_small_rock(bottom_right, Vector(1,-1), sprite)
+
+        #add to rock list:
+        
+        temp = [rock_upper_left, rock_upper_right, rock_bottom_left, rock_bottom_right]
+        random.shuffle(temp) #in place
+        new_list.extend(temp[:2])
+        constants.object_list = new_list
+        
+
+    def create_small_rock(self, position, velocity, sprite):
+        r = Rock(position)
+        r.velocity = velocity * self.speed_scale()
+        r.set_sprite(sprite)
+        r.ignore_breaks = True 
+        r.mass = 1.0
+        return r
+
     def reposition_rock(self):
         #current position is already out of bounds 
         x_pos = self.position.x

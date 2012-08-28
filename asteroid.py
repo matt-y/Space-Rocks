@@ -2,7 +2,8 @@ import pyglet
 import math 
 import constants
 from ship import Ship
-from rocks import Rock_List, Rock
+from rocks import Rock
+from rock_list import Rock_List
 from vector import Vector
 from resources import Resources
 from gameobject import GameObject
@@ -33,18 +34,16 @@ game_resources = Resources()
 ship_start = constants.player_start
 ship = Ship(ship_start)
 #python! :<
-object_list = Rock_List(constants.number_of_rocks, ship.position).rock_list
-#object_list.append(ship)
 fps_display = init_clock(update, constants.clock_interval)
 
 #Below are the game's window events. 
 @window.event
 def on_draw():
     window.clear()
-    for obj in object_list:
+    for obj in constants.object_list:
         #rock logic handled in rock's draw function, likewise for ship
         obj.draw()
-    rock2obj_collision_check(object_list, object_list)
+    rock2obj_collision_check(constants.object_list, constants.object_list)
     fps_display.draw()
     
 @window.event 
@@ -69,9 +68,6 @@ def rock2obj_collision_check(list1, list2):
             else:
                 if(GameObject.will_collide_with(obj, other_obj)):
                        obj.handle_collision(other_obj)
-
-
-
 
 if __name__ == '__main__':
     pyglet.app.run()

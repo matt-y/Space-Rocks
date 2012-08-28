@@ -96,6 +96,19 @@ class GameObject(object):
         # distance in R/L
         self.velocity = v1_prime.v_normalize() * self.speed_scale()
         other.velocity = v2_prime.v_normalize() * self.speed_scale()
+
+        self.deduct_hp(self)
+        self.deduct_hp(other)
+
+
+    def deduct_hp(self, obj):
+        if(obj.ignore_breaks == True):
+            return 
+        else:
+            obj.hp -= 1 
+            if (obj.hp == 0):
+                print "breaking rock" 
+                self.break_rock()
         
             
    
